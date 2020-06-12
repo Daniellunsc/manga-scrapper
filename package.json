@@ -5,14 +5,17 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "tsc && node ./build/index.js"
+    "start": "tsc && node ./build/index.js",
+    "lint": "eslint '**/*.js' --ignore-pattern node_modules/",
+    "lint:fix": "eslint '**/*.js' --fix --ignore-pattern node_modules/"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
     "node-fetch": "^2.6.0",
-    "node-horseman": "^3.3.0"
+    "node-horseman": "^3.3.0",
+    "typescript": "^3.9.5"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^3.2.0",
