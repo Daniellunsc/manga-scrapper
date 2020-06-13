@@ -13,5 +13,5 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
       - name: Installation
         run: yarn install --ignore-scripts
-      - name: Try Linting
+      - name: Try Lint
         run: yarn lint
