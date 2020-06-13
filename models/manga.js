@@ -1,16 +1,16 @@
 class Manga {
     name = '';
 
-    id_serie = '';
+    idSeries = '';
 
-    is_complete = false;
+    isComplete = false;
 
     link = '';
 
-    Manga(name, id_serie, is_complete, link) {
+    Manga(name, idSeries, isComplete, link) {
       this.name = name;
-      this.id_serie = id_serie;
-      this.is_complete = is_complete;
+      this.idSeries = idSeries;
+      this.isComplete = isComplete;
       this.link = link;
     }
 }
