@@ -1,7 +1,8 @@
 import {Manga, MangaBuilder} from './models';
+import MangaEngineService from './services/MangaEngine';
 
 async function run(): Promise<void> {
-     const myManga: Manga = new MangaBuilder().name("Kimetsu").build();
+     const myManga: any = await MangaEngineService.searchByTerm('Kimetsu');
      console.log(myManga)
 }
 
