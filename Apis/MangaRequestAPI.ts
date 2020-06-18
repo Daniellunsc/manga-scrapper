@@ -1,6 +1,6 @@
 import MangaRequest from "../Interfaces/MangaRequestInterface";
 import { AxiosResponse } from "axios";
-import {MangaSearchByTermResponse, MangaSearchVolumes} from "../Interfaces";
+import { MangaSearchByTermResponse, MangaSearchVolumes } from "../Interfaces";
 import { mangaLivreRequest } from './BaseRequest'
 import FormData from 'form-data';
 
@@ -18,7 +18,18 @@ class MangaRequestAPI implements MangaRequest {
     }
 
     static async searchVolumes(id: String, page: String): Promise<AxiosResponse<MangaSearchVolumes>> {
-        const response: AxiosResponse<MangaSearchVolumes> = await mangaLivreRequest.get(`/series/chapters_list.json?page=${page}&id_serie=${id}`)
+        let response: AxiosResponse<MangaSearchVolumes> = await mangaLivreRequest.get(`/series/chapters_list.json?page=${page}&id_serie=${id}`)
+        if (response.data) {
+            let chapters = response.data.chapters.map(chapter => {
+                let keyOfScan: string = Object.keys(chapter.releases)[0];
+                return {
+                    ...chapter,
+                    id_release: chapter.releases[keyOfScan].id_release,
+                    link: chapter.releases[keyOfScan].link,
+                }
+            })
+            response.data.chapters = chapters;
+        }
         return response;
     }
 }

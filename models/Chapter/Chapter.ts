@@ -7,9 +7,11 @@ export default interface Chapter {
     date: string,
     date_created: string,
     releases: {
-        [_scan: string]: {
+        [key: string]: {
             id_release: string,
             link: string,
-        },
-    }
+        };
+    },
+    link: string,
+    id_release: string,
 }
