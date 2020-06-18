@@ -1,7 +1,7 @@
 import { AxiosResponse } from 'axios'
-import MangaSearchByTermResponse from './MangaSearchByTermResponse';
+import { MangaSearchVolumes, MangaSearchByTermResponse } from '.';
 export default interface MangaRequest {
     searchByTerm(term: String): Promise<AxiosResponse<MangaSearchByTermResponse>>;
 
-    searchVolumes(id: String, page: String): Promise<AxiosResponse<MangaSearchByTermResponse>>;
+    searchVolumes(id: String, page: String): Promise<AxiosResponse<MangaSearchVolumes>>;
 }

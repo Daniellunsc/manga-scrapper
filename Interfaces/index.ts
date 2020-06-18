@@ -1,3 +1,8 @@
 import MangaEngineInterface from './MangaEngineInterface';
+import {MangaSearchByTermResponse, MangaSearchVolumes} from './MangaSearchResponse';
 
-export default MangaEngineInterface;
+export {
+    MangaEngineInterface,
+    MangaSearchByTermResponse,
+    MangaSearchVolumes
+};
