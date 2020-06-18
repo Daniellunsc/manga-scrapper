@@ -1,8 +1,8 @@
-import { Manga, Chapter } from "../models";
+import { Manga, Chapter } from '../models';
 
 export interface MangaSearchByTermResponse {
-    categories: Array<String>,
-    groups: Array<String>,
+    categories: Array<string>,
+    groups: Array<string>,
     series: Array<Manga>
 }
 

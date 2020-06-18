@@ -3,7 +3,7 @@ import Manga from './Manga/Manga';
 import Chapter from './Chapter/Chapter';
 
 export {
-    MangaBuilder,
-    Manga,
-    Chapter
-}
+  MangaBuilder,
+  Manga,
+  Chapter,
+};

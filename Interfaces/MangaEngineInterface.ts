@@ -1,7 +1,7 @@
-import { Manga } from "../models";
+import { Manga, Chapter } from '../models';
 
 export default interface MangaEngine {
-    searchByTerm(term: String): any;
+    searchByTerm(term: string): Array<Manga>;
 
-    searchVolumes(manga: Manga): any;
+    searchVolumes(manga: Manga): Array<Chapter>;
 }

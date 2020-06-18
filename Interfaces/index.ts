@@ -1,8 +1,8 @@
 import MangaEngineInterface from './MangaEngineInterface';
-import {MangaSearchByTermResponse, MangaSearchVolumes} from './MangaSearchResponse';
+import { MangaSearchByTermResponse, MangaSearchVolumes } from './MangaSearchResponse';
 
 export {
-    MangaEngineInterface,
-    MangaSearchByTermResponse,
-    MangaSearchVolumes
+  MangaEngineInterface,
+  MangaSearchByTermResponse,
+  MangaSearchVolumes,
 };
