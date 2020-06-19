@@ -8,4 +8,4 @@ async function run(): Promise<void> {
   console.log(targetVolume);
 }
 
-run();
+run().then(() => console.log('finished'));
