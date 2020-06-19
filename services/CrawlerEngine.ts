@@ -1,4 +1,4 @@
-import {launch, Page, } from 'puppeteer';
+import {Page, } from 'puppeteer';
 import fs from "fs";
 import Axios from "axios";
 
@@ -6,15 +6,18 @@ import Axios from "axios";
 const IMAGE_SELECTOR = "#reader-wrapper > div.reader-content.fit.horizontal > div.manga-page > div.manga-image > img";
 const BUTTON_NEXT_SELECTOR = "#reader-wrapper > div:nth-child(10) > div.page-navigation-wrapper > div > div.page-next"
 
+
 export default class CrawlerEngine {
-    static async downloadAllImages(page: Page, totalPages: number) {
-        return new Promise(async (resolve, reject) => {
+    static downloadAllImages(page: Page, totalPages: number): Promise<void> {
+        return new Promise(async (resolve) => {
             let actualPage = 1;
             while(actualPage <= totalPages) {
-                const imageFile = await page.$eval(IMAGE_SELECTOR, ((element: any) => element.getAttribute('src')))
-                let filePath = `./prints/page_${actualPage}.png`
-                await downloadImage(imageFile, filePath)
-                await page.$eval(BUTTON_NEXT_SELECTOR, ((element: any) => element.click()))
+                const imageFile: string | null = await page.$eval(IMAGE_SELECTOR, ((element: Element) => element.getAttribute('src')))
+                if(imageFile) {
+                    const filePath = `./prints/page_${actualPage}.png`
+                    await downloadImage(imageFile, filePath)
+                }
+                await page.$eval(BUTTON_NEXT_SELECTOR, (element: any) => element.click())
                 actualPage++;
             }
             resolve();
