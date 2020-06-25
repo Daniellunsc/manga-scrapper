@@ -6,8 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "tsc && node ./build/index.js",
-    "lint": "eslint '**/*.js' --ignore-pattern node_modules/",
-    "lint:fix": "eslint '**/*.js' --fix --ignore-pattern node_modules/"
+    "lint": "eslint '**/*.ts' --ignore-pattern node_modules/",
+    "lint:fix": "eslint '**/*.ts' --fix --ignore-pattern node_modules/"
   },
   "author": "",
   "license": "ISC",
@@ -16,9 +16,11 @@
     "form-data": "^3.0.0",
     "node-fetch": "^2.6.0",
     "node-horseman": "^3.3.0",
+    "puppeteer": "^4.0.0",
     "typescript": "^3.9.5"
   },
   "devDependencies": {
+    "@types/puppeteer": "^3.0.0",
     "@typescript-eslint/eslint-plugin": "^3.2.0",
     "@typescript-eslint/parser": "^3.2.0",
     "eslint": "^6.8.0",

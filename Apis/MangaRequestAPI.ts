@@ -1,25 +1,15 @@
-import MangaRequest from "../Interfaces/MangaRequestInterface";
-import { AxiosResponse } from "axios";
-import MangaSearchByTermResponse from "../Interfaces/MangaSearchByTermResponse";
-import { mangaLivreRequest } from './BaseRequest'
-import FormData from 'form-data';
+import {AxiosResponse} from 'axios';
+import {MangaSearchByTermResponse, MangaSearchVolumes} from '../Interfaces';
+import mangaLivreRequest from './BaseRequest';
 
-class MangaRequestAPI implements MangaRequest {
-    searchByTerm(term: String): Promise<AxiosResponse<MangaSearchByTermResponse>> {
-        throw new Error("Method not implemented.");
-    }
-    searchVolumes(id: String, page: String): Promise<AxiosResponse<MangaSearchByTermResponse>> {
-        throw new Error("Method not implemented.");
-    }
+class MangaRequestAPI{
+  static async searchByTerm(term: string): Promise<AxiosResponse<MangaSearchByTermResponse>> {
+    return await mangaLivreRequest.post('/lib/search/series.json', `search=${term}`);
+  }
 
-    static async searchByTerm(term: string): Promise<AxiosResponse<MangaSearchByTermResponse>> {
-        const response = await mangaLivreRequest.post('series.json', `search=${term}`);
-        return response;
-    }
-
-    static async searchVolumes(id: String, page: String): Promise<AxiosResponse<MangaSearchByTermResponse>> {
-        return mangaLivreRequest.get('/series.json');
-    }
+  static async searchVolumes(id: string, page: string): Promise<AxiosResponse<MangaSearchVolumes>> {
+    return await mangaLivreRequest.get(`/series/chapters_list.json?page=${page}&id_serie=${id}`);
+  }
 }
 
 export default MangaRequestAPI;
