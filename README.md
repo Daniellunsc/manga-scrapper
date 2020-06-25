@@ -25,6 +25,7 @@ O projeto está organizado com algumas camadas para manter a coesão e o propós
    - Typescript
 
 - Depois de instalado o Yarn ou NPM e o Typescript, na pasta inicial do projeto basta executar ``yarn start`` ou ``npm start``
+- Atualmente no arquivo index.ts da base do projeto, você consegue alterar o nome do Mangá sendo buscado, e também escolher o volume que deseja. Atualmente o volume selecionado é sempre o último lançado.
 ## Planos para o projeto
 - A ideia é evoluir o código para uma API, onde possa ser consultado direto e possa retornar um volume de um mangá específico.
 - Depois da API construída, um outro serviço de bot do telegram será criado e atualizado aqui com o Link, para que possa ser consultado o(s) volume(s) diretamente pelo chat do telegram.
