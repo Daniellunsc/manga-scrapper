@@ -14,34 +14,34 @@ const MANGA_LIVRE_BASE = "https://mangalivre.net/"
 
 export default class CrawlerEngine {
 
-    static async downloadAllVolumesFromManga(manga: Manga) {
-        let volumes: Array<Chapter> = await MangaEngineService.searchAllVolumes(manga.id_serie);
+    static async downloadAllVolumesFromManga(manga: Manga): Promise<void> {
+        const volumes: Array<Chapter> = await MangaEngineService.searchAllVolumes(manga.id_serie);
         const browser = await launch();
         const page = await browser.newPage();
-        for(let volume of volumes) {
+        for(const volume of volumes) {
             await page.goto(`${MANGA_LIVRE_BASE}${volume.link}`, {timeout: 0, waitUntil: "load"})
             const totalPages = await page.$eval(TOTAL_PAGES_SELECTOR, ((e: Element) => e.innerHTML))
-            let imagesToDownload = await CrawlerEngine.fetchImagesLinks(page, parseInt(totalPages));
+            const imagesToDownload = await CrawlerEngine.fetchImagesLinks(page, parseInt(totalPages));
             await CrawlerEngine.downloadImageList(imagesToDownload, manga, volume);
         }
     }
 
-    static async downloadAllVolumesFromMangaByTerm(term: string) {
-        let mangaList: Array<Manga> = await MangaEngineService.searchByTerm(term);
-        let manga = mangaList[0];
+    static async downloadAllVolumesFromMangaByTerm(term: string): Promise<void> {
+        const mangaList: Array<Manga> = await MangaEngineService.searchByTerm(term);
+        const manga = mangaList[0];
         await this.downloadAllVolumesFromManga(manga)
     }
 
 
-    static buildImagePath(imageFullPathString: string, chapterId: string, fullPath: string) {
-        let imageIdentifier = imageFullPathString.split('/').pop();
-        let imageName = `${chapterId}_${imageIdentifier}`
+    static buildImagePath(imageFullPathString: string, chapterId: string, fullPath: string): string{
+        const imageIdentifier = imageFullPathString.split('/').pop();
+        const imageName = `${chapterId}_${imageIdentifier}`
         return `${fullPath}${imageName}`
     }
 
     static async fetchImagesLinks(page: Page, totalPages: number): Promise<Array<string>> {
         let actualPage = 1;
-        let imageArray: Array<string> = [];
+        const imageArray: Array<string> = [];
         while(actualPage <= totalPages) {
             const imageFile: string | null = await page.$eval(IMAGE_SELECTOR, ((element: Element) => element.getAttribute('src')))
             if(imageFile) {
@@ -54,15 +54,15 @@ export default class CrawlerEngine {
     }
 
     static async downloadImageList(images: Array<string>, manga: Manga, chapter: Chapter): Promise<void> {
-        let fullPath = `${BASEPATH}/${manga.name}/${chapter.number}/`
-        let missingFiles = await this.findMissingFilesInAVolume(images, fullPath, chapter);
+        const fullPath = `${BASEPATH}/${manga.name}/${chapter.number}/`
+        const missingFiles = await this.findMissingFilesInAVolume(images, fullPath, chapter);
 
         console.log(`Chapter ${chapter.number} have: ${missingFiles.length} missing files`)
         if(missingFiles.length > 0) {
             console.log(`Downloading chapter ${chapter.number}º missing files`)
             missingFiles.map(async image => {
-                let imageIdentifier = image.split('/').pop();
-                let imageName = `${chapter.id_chapter}_${imageIdentifier}`
+                const imageIdentifier = image.split('/').pop();
+                const imageName = `${chapter.id_chapter}_${imageIdentifier}`
                 await this.downloadImage(image, `${fullPath}${imageName}`)
             })
         }
@@ -70,7 +70,7 @@ export default class CrawlerEngine {
 
     static findMissingFilesInAVolume(images: Array<string>, fullPath: string, chapter: Chapter): Promise<Array<string>> {
         return new Promise(async (resolve) =>  {
-            let imagesToDownload: Array<string> = [];
+            const imagesToDownload: Array<string> = [];
             if(fs.existsSync(fullPath)) {
                 images.map((image, index) => {
                     const fullPathWithFile = this.buildImagePath(image, chapter.id_chapter, fullPath);
@@ -98,17 +98,17 @@ export default class CrawlerEngine {
             response.data.pipe(writer)
             return new Promise((resolve, reject) => {
                 writer.on('finish', resolve)
-                writer.on('error', resolve)
+                writer.on('error', reject)
             })
         } catch (e) {
             return;
         }
     }
 
-    static async createFolderIfNotExists(folder: string) {
+    static async createFolderIfNotExists(folder: string): Promise<void> {
         return new Promise((resolve, reject) => {
             if(!fs.existsSync(folder)) {
-                fs.mkdir(folder, {recursive: true}, (error, path) => {
+                fs.mkdir(folder, {recursive: true}, (error) => {
                     if(error) {
                         console.trace();
                         console.error('Error on folder creating')

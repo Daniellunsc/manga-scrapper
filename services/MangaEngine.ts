@@ -12,14 +12,14 @@ export default class MangaEngineService{
     return response.data.series[0];
   }
 
-  static async findVolume(mangaId: string, volumeNumber: string) {
+  static async findVolume(mangaId: string, volumeNumber: string): Promise<Chapter | undefined> {
     let page = 1;
-    let shouldStop: Boolean = false;
+    let shouldStop = false;
     while(!shouldStop) {
       const {data} = await MangaRequestAPI.searchVolumes(mangaId, page);
       const {chapters} = data;
       if(Array.isArray(chapters)) {
-        let haveSearchedChapter = chapters.find(chapter => chapter.number === volumeNumber);
+        const haveSearchedChapter = chapters.find(chapter => chapter.number === volumeNumber);
         if(haveSearchedChapter) {
           shouldStop = true;
           return this.extractLinkAndReleaseIdFromChapter(haveSearchedChapter);
@@ -34,6 +34,7 @@ export default class MangaEngineService{
         console.log(`Continuando busca: ${page}`)
       }
     }
+    return undefined;
   }
 
   static async searchVolumes(id: string, page: string | number): Promise<Array<Chapter>> {
@@ -46,7 +47,7 @@ export default class MangaEngineService{
 
   static async searchAllVolumes(id: string): Promise<Array<Chapter>> {
     let page = 1;
-    let chaptersList: Array<Chapter> = [];
+    const chaptersList: Array<Chapter> = [];
     let shouldStop = false;
     while(!shouldStop) {
       const {data} = await MangaRequestAPI.searchVolumes(id, page);
