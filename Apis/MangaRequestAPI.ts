@@ -7,7 +7,7 @@ class MangaRequestAPI{
     return await mangaLivreRequest.post('/lib/search/series.json', `search=${term}`);
   }
 
-  static async searchVolumes(id: string, page: string): Promise<AxiosResponse<MangaSearchVolumes>> {
+  static async searchVolumes(id: string, page: string | number): Promise<AxiosResponse<MangaSearchVolumes>> {
     return await mangaLivreRequest.get(`/series/chapters_list.json?page=${page}&id_serie=${id}`);
   }
 }

@@ -7,5 +7,5 @@ export interface MangaSearchByTermResponse {
 }
 
 export interface MangaSearchVolumes {
-    chapters: Array<Chapter>
+    chapters: Array<Chapter> | Boolean
 }
