@@ -1,0 +1,36 @@
+stages:
+  - build
+  - release
+  - deploy
+
+.publish_docker_hub:
+  image: docker:18.09
+  variables:
+    DOCKER_HOST: 'tcp://localhost:2375'
+    DOCKER_DRIVER: overlay2
+  services:
+    - docker:18.09-dind
+  stage: build
+  before_script:
+    - login_docker_hub
+  script:
+    - docker_push
+
+
+build_image:
+  stage: install
+  extends:
+    - .publish_docker_hub
+
+.functions: &functions |
+  function login_docker_hub(){
+    docker login -p $DOCKERPASSWORD -u $DOCKERUSER
+  }
+  function docker_push(){
+    cd manga-scrapper-api/
+    docker build -t zero101010/manga-scrapper-api .
+    docker push zero101010/manga-scrapper-api
+  }
+
+before_script:
+  - *functions
