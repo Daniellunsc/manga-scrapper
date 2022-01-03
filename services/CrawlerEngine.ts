@@ -6,9 +6,9 @@ import {launch} from 'puppeteer';
 import {MangaEngineService} from "./index";
 
 // TODO: mover para constantes
-const IMAGE_SELECTOR = "#reader-wrapper > div.reader-content.fit.horizontal > div.manga-page > div.manga-image > img";
+const IMAGE_SELECTOR = "#reader-wrapper > div.reader-content.horizontal.original > div.manga-page > div.manga-image > picture > source";
 const BUTTON_NEXT_SELECTOR = "#reader-wrapper > div:nth-child(10) > div.page-navigation-wrapper > div > div.page-next"
-const TOTAL_PAGES_SELECTOR =  "#reader-wrapper > div:nth-child(10) > div.page-navigation-wrapper > div > div.page-navigation > span > em:nth-child(2)"
+const TOTAL_PAGES_SELECTOR =  "#reader-wrapper > div:nth-child(9) > div.page-navigation-wrapper > div > div.page-navigation > span > em:nth-child(2)"
 const BASEPATH = './downloads'
 const MANGA_LIVRE_BASE = "https://mangalivre.net/"
 
@@ -16,13 +16,35 @@ export default class CrawlerEngine {
 
     static async downloadAllVolumesFromManga(manga: Manga): Promise<void> {
         const volumes: Array<Chapter> = await MangaEngineService.searchAllVolumes(manga.id_serie);
-        const browser = await launch();
-        const page = await browser.newPage();
+        const browser = await launch({
+            executablePath: '/Applications/Google\ Chrome.app/Contents/MacOS/Google\ Chrome',
+            headless: true,
+        });
+        const page = await browser.newPage()
+
+        // console.log(volumes)
         for(const volume of volumes) {
+            console.log(volume)
+            const imagesResponse = page.waitForResponse((response) => {
+                console.log(volume.id_release)
+                return response.url().startsWith(`https://mangalivre.net/leitor/pages/${volume.id_release}`)
+            })
             await page.goto(`${MANGA_LIVRE_BASE}${volume.link}`, {timeout: 0, waitUntil: "load"})
-            const totalPages = await page.$eval(TOTAL_PAGES_SELECTOR, ((e: Element) => e.innerHTML))
-            const imagesToDownload = await CrawlerEngine.fetchImagesLinks(page, parseInt(totalPages));
-            await CrawlerEngine.downloadImageList(imagesToDownload, manga, volume);
+            console.log(`${MANGA_LIVRE_BASE}${volume.link}`)
+            let imagesArrayRawData = await (await imagesResponse).json();
+            let imagesToDownload: Array<string> = [];
+            if(Array.isArray(imagesArrayRawData.images)) {
+                imagesArrayRawData.images.map((data: { legacy: string; }) => {
+                    imagesToDownload.push(data.legacy);
+                })
+                await CrawlerEngine.downloadImageList(imagesToDownload, manga, volume);
+            }
+            
+            // const imageFile: string | null = await page.$eval("#reader-wrapper > div.reader-content.horizontal.original > div.manga-page > div.manga-image > picture", ((element: Element) => element.innerHTML))
+            // console.log(imageFile)
+            // const totalPages = await page.$eval(TOTAL_PAGES_SELECTOR, ((e: Element) => e.innerHTML))
+            // const imagesToDownload = await CrawlerEngine.fetchImagesLinks(page, parseInt(totalPages));
+           
         }
     }
 
@@ -31,7 +53,6 @@ export default class CrawlerEngine {
         const manga = mangaList[0];
         await this.downloadAllVolumesFromManga(manga)
     }
-
 
     static buildImagePath(imageFullPathString: string, chapterId: string, fullPath: string): string{
         const imageIdentifier = imageFullPathString.split('/').pop();
@@ -43,6 +64,7 @@ export default class CrawlerEngine {
         let actualPage = 1;
         const imageArray: Array<string> = [];
         while(actualPage <= totalPages) {
+            console.log("page", actualPage)
             const imageFile: string | null = await page.$eval(IMAGE_SELECTOR, ((element: Element) => element.getAttribute('src')))
             if(imageFile) {
                 imageArray.push(imageFile);
